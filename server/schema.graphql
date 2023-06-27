@@ -1,0 +1,19 @@
+type Query {
+    kanban: [KanbanColumn!]!
+}
+
+type Mutation {
+    moveItem(itemId: ID!, toListId: ID!, index: Int!): [KanbanColumn!]!
+}
+
+type KanbanColumn {
+    id: ID!
+    name: String!
+    items: [KanbanItem!]!
+}
+
+type KanbanItem {
+    id: ID!
+    name: String!
+    done: Boolean!
+}
