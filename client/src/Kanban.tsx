@@ -92,13 +92,16 @@ export function Kanban() {
                 toListId: result.destination.droppableId,
             });
         }
+        if(result.type === 'column' && result.destination.droppableId === 'kanban') {
+            //TODO: move column
+        }
 
     }, [])
 
     return (
         <Box sx={{paddingBottom: 4}}>
             <DragDropContext onDragEnd={handleOnDragEnd}>
-                <Droppable droppableId={'kanban'} direction={'horizontal'}>
+                <Droppable droppableId={'kanban'} direction={'horizontal'} type={'column'}>
                     {(provided) => (
                         <Stack spacing={2} margin={5} direction="row"
                                ref={provided.innerRef}
