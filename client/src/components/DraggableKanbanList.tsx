@@ -41,8 +41,10 @@ export function DraggableKanbanList({
                 </Droppable>
                 <Button onClick={() => setOpen(true)}>Add item</Button>
                 <Dialog open={open} onClose={() => setOpen(false)}>
+                    <Stack p={2}>
                     <TextField label={'Item name'} value={newItemName}
                                onChange={(e) => setNewItemName(e.target.value)}/>
+                    </Stack>
                     <DialogActions>
                         <Button onClick={() => setOpen(false)}>Cancel</Button>
                         <Button onClick={() => {
