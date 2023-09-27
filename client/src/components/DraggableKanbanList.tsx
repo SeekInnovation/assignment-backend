@@ -1,12 +1,24 @@
 import {Draggable, Droppable} from "react-beautiful-dnd";
 import {KanbanList} from "./KanbanList";
-import {Button, Stack} from "@mui/material";
+import {Button, Dialog, DialogActions, Stack, TextField} from "@mui/material";
 import {DraggableKanbanItem} from "./DraggableKanbanItem";
+import {useState} from "react";
+import {useAddKanbanItem} from "../model/useAddKanbanItem";
 
 export function DraggableKanbanList({
                                         index,
                                         title, items, id
-                                    }: { title: string, id: string, items: { id: string, name: string, done: boolean }[], index: any }) {
+                                    }: {
+    title: string,
+    id: string,
+    items: { id: string, name: string, done: boolean }[],
+    index: any
+}) {
+
+    const addMutation = useAddKanbanItem()
+
+    const [open, setOpen] = useState(false);
+    const [newItemName, setNewItemName] = useState('');
     return <Draggable draggableId={id} index={index}>
         {(provided) => (
             <KanbanList
@@ -27,7 +39,22 @@ export function DraggableKanbanList({
                         </Stack>
                     )}
                 </Droppable>
-                <Button>Add item</Button>
+                <Button onClick={() => setOpen(true)}>Add item</Button>
+                <Dialog open={open} onClose={() => setOpen(false)}>
+                    <TextField label={'Item name'} value={newItemName}
+                               onChange={(e) => setNewItemName(e.target.value)}/>
+                    <DialogActions>
+                        <Button onClick={() => setOpen(false)}>Cancel</Button>
+                        <Button onClick={() => {
+                            addMutation.mutateAsync({
+                                toListId: id,
+                                name: newItemName
+                            })
+                            setOpen(false)
+                            setNewItemName('')
+                        }}>Add</Button>
+                    </DialogActions>
+                </Dialog>
             </KanbanList>
         )}
     </Draggable>;

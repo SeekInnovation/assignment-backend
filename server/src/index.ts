@@ -6,7 +6,7 @@ import cors from 'cors'
 
 const schema = buildSchema(readFileSync('./schema.graphql', 'utf-8'))
 
-const kanban = [
+let kanban = [
     {
         id: "column1",
         name: 'Todo',
@@ -62,12 +62,33 @@ const root = {
         columnFrom.items = columnFrom.items.filter(item => item.id !== itemId)
         columnTo.items.splice(index, 0, item)
         return kanban
+    },
+    moveColumn: ({listId, index}: {listId: string, index: number}) => {
+        const column = kanban.find(column => column.id === listId)
+        if (!column) {
+            throw new Error('Column not found')
+        }
+        kanban = kanban.filter(column => column.id !== listId)
+        kanban.splice(index, 0, column)
+        return kanban
+    },
+    addItem: ({listId, name}: {listId: string, name: string}) => {
+        const column = kanban.find(column => column.id === listId)
+        if (!column) {
+            throw new Error('Column not found')
+        }
+        const item = {
+            id: `item${Math.random()}`,
+            name,
+            done: false
+        }
+        column.items.push(item)
+        return item
     }
 }
 
 const app = express()
 
-//TODO: remove cors?
 app.use(cors())
 
 app.use(
